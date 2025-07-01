@@ -50,7 +50,7 @@ function loadSelectedDeck() {
     document.getElementById("deckInput").value = deckText;
     document.getElementById("deckNameInput").value = selectedName;
     const deckInput = document.getElementById("deckInput");
-    cardTypes = extractCardTypes(parseDeck(deckInput.value));
+    const cardTypes = extractCardTypes(parseDeck(deckInput.value));
     populateTypeDropdown(cardTypes);
     alert(`Loaded deck: ${selectedName}`);
   } else {
