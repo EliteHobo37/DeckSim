@@ -54,9 +54,3 @@ button:hover {
 .condition-row input {
   flex: 1;
 }
-
-.condition-management {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
