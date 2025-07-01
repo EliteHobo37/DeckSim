@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     runBtn.addEventListener("click", () => {
         const deck = parseDeck(deckInput.value);
         const conditions = getConditions();
-        const results = runSimulation(deck, conditions, [1, 1, 1], 7, 10000);
+        const results = simulate(deck, conditions, [1, 1, 1], 7, 10000);
         displayResults(results, resultDiv);
         //renderChart(results, chartCanvas);
     });
