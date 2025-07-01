@@ -25,6 +25,7 @@ textarea, input, select, button {
 
 textarea {
   margin-right: 0.5rem;
+  box-sizing: border-box;
 }
 
 button {
