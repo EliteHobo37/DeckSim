@@ -97,7 +97,7 @@ function extractCardTypes(deck) {
   for (const card of deck) {
     // Each card is expected to be an array of card types
     // e.g., ["Ramp", "Artifact"] or ["Land"] or ["Creature", "Draw"]
-    for (const type of card.types) {
+    for (const type of card["types"]) {
       typeSet.add(type.trim());
     }
   }
