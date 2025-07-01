@@ -49,6 +49,9 @@ function loadSelectedDeck() {
   if (deckText) {
     document.getElementById("deckInput").value = deckText;
     document.getElementById("deckNameInput").value = selectedName;
+    const deckInput = document.getElementById("deckInput");
+    cardTypes = extractCardTypes(parseDeck(deckInput.value));
+    populateTypeDropdown(cardTypes);
     alert(`Loaded deck: ${selectedName}`);
   } else {
     alert("Deck not found.");
