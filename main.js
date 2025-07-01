@@ -217,8 +217,8 @@ function populateTypeDropdown(typeList = []) {
   for (const type in typeSet) {
     console.log(type);
     const option = document.createElement("option");
-    option.value = type;
-    option.textContent = type;
+    option.value = type.value;
+    option.textContent = type.value;
     dropdown.appendChild(option);
   }
 }
