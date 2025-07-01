@@ -85,7 +85,7 @@ function parseDeck(text) {
     for (let line of lines) {
         const [count, name, ...typeParts] = line.split(",");
         const qty = parseInt(count.trim());
-        const types = typeParts.join(",").trim().split(/\s+/);
+        const types = typeParts.join(",").trim().split(",");
 
         for (let i = 0; i < qty; i++) {
             deck.push({ name: name.trim(), types });
