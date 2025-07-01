@@ -91,7 +91,7 @@ function parseDeck(text) {
             deck.push({ name: name.trim(), types });
         }
     }
-
+    print(deck);
     return deck;
 }
 
