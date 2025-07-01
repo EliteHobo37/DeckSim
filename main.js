@@ -203,7 +203,7 @@ function populateTypeDropdown(deckObjects = []) {
   const typeSet = new Set();
   for (const card in deckObjects) {
       for (const type in card.types) {
-          typeSet.add(type.replace(/["']/g, "").trim());
+          typeSet.add(type.trim());
     }
   }
 
