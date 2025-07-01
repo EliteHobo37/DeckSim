@@ -26,8 +26,10 @@
     <div class="condition-management">
       <input type="text" id="condition-name" placeholder="Condition Set Name">
       <button onclick="saveConditionSets()">💾 Save Set</button>
-      <select id="conditionList"></select>
       <button onclick="deleteConditionSets()">🗑️ Delete Set</button>
+    </div>
+    <div id="conditionsList" style="overflow-x: auto; max-height: 300px;">
+    <!-- Dynamically populated condition sets will go here -->
     </div>
 
     <label>Mulligans (Commander allows 1 free mulligan)</label>
