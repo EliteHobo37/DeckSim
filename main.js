@@ -202,7 +202,9 @@ function updateConditionsDisplay() {
 function populateTypeDropdown(deckObjects = []) {
   const typeSet = new Set();
   for (const card in deckObjects) {
+      console.log(card);
       for (const type in card.types) {
+          console.log(type);
           typeSet.add(type.trim());
     }
   }
