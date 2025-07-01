@@ -13,9 +13,9 @@ body {
   margin: auto;
 }
 
-textarea, input, select, button, textarea {
+textarea, input, select, button {
   width: 100%;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0.5rem;
   padding: 0.5rem;
   background-color: #1e1e1e;
   border: 1px solid #444;
