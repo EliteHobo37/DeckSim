@@ -201,20 +201,20 @@ function updateConditionsDisplay() {
 
 function populateTypeDropdown(deckObjects) {
   const typeSet = new Set();
-  deckObjects.forEach(card => {
-    card.types.forEach(type => {
-      typeSet.add(type.replace(/["']/g, "").trim());
-    });
-  });
+  for (card in deckObjects) {
+      for (type in card.types) {
+          typeSet.add(type.replace(/["']/g, "").trim());
+    }
+  }
 
   const dropdown = document.getElementById("typeSelect");
   dropdown.innerHTML = "";
-  Array.from(typeSet).sort().forEach(type => {
+  for (type in typeSet) {
     const option = document.createElement("option");
     option.value = type;
     option.textContent = type;
     dropdown.appendChild(option);
-  });
+  }
 }
 
 function displayResults(results, container) {
