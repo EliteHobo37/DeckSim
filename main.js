@@ -172,6 +172,30 @@ function getConditions() {
     return conditions;
 }
 
+function addCondition() {
+  const type = document.getElementById("typeSelect").value;
+  const min = parseInt(document.getElementById("minInput").value, 10);
+  const max = document.getElementById("maxInput").value.trim();
+  const maxValue = max === "" ? Infinity : parseInt(max, 10);
+
+  if (!type) return;
+
+  currentConditions[type] = { min, max: maxValue };
+
+  updateConditionsDisplay();
+}
+
+function updateConditionsDisplay() {
+  const list = document.getElementById("conditionsList");
+  list.innerHTML = "";
+
+  for (const [type, { min, max }] of Object.entries(currentConditions)) {
+    const li = document.createElement("li");
+    li.textContent = `${type} → Min: ${min}, Max: ${max === Infinity ? "∞" : max}`;
+    list.appendChild(li);
+  }
+}
+
 function displayResults(results, container) {
     container.innerHTML = "<h3>Simulation Results:</h3>";
     for (let key in results) {
@@ -208,3 +232,4 @@ window.saveConditionSets = saveConditionSets;
 window.loadConditionSets = loadConditionSets;
 window.saveCurrentDeck = saveCurrentDeck;
 window.loadSelectedDeck = loadSelectedDeck;
+window.addCondition = addCondition;
