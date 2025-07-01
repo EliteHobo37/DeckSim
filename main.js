@@ -199,7 +199,7 @@ function updateConditionsDisplay() {
   }
 }
 
-function populateTypeDropdown(typeList = []) {
+function populateTypeDropdown(typeList = {}) {
 
   console.log(typeList)
   const dropdown = document.getElementById("typeSelect");
