@@ -2,6 +2,8 @@
 // main.js
 import { simulate } from './simulate.js';
 
+document.addEventListener("DOMContentLoaded", updateDeckSelector);
+
 document.addEventListener("DOMContentLoaded", () => {
     const deckInput = document.getElementById("deckInput");
     const runBtn = document.getElementById("runSimBtn");
@@ -21,6 +23,55 @@ document.addEventListener("DOMContentLoaded", () => {
         deckInput.value = text;
     });
 });
+
+function saveCurrentDeck() {
+  const name = document.getElementById("deckNameInput").value.trim();
+  const deckText = document.getElementById("deckInput").value.trim();
+  if (!name || !deckText) {
+    alert("Please enter a deck name and paste your deck list.");
+    return;
+  }
+
+  let allDecks = JSON.parse(localStorage.getItem("savedDecks") || "{}");
+  allDecks[name] = deckText;
+  localStorage.setItem("savedDecks", JSON.stringify(allDecks));
+  alert(`Deck "${name}" saved.`);
+  updateDeckSelector();
+}
+
+function loadSelectedDeck() {
+  const select = document.getElementById("deckSelector");
+  const selectedName = select.value;
+  if (!selectedName) return;
+
+  const allDecks = JSON.parse(localStorage.getItem("savedDecks") || "{}");
+  const deckText = allDecks[selectedName];
+  if (deckText) {
+    document.getElementById("deckInput").value = deckText;
+    alert(`Loaded deck: ${selectedName}`);
+  } else {
+    alert("Deck not found.");
+  }
+}
+
+function updateDeckSelector() {
+  const decks = JSON.parse(localStorage.getItem("savedDecks") || "{}");
+  const selector = document.getElementById("deckSelector");
+  selector.innerHTML = "";
+
+  const placeholder = document.createElement("option");
+  placeholder.textContent = "-- Select a Deck --";
+  placeholder.value = "";
+  selector.appendChild(placeholder);
+
+  for (const name in decks) {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    selector.appendChild(option);
+  }
+}
+
 
 function parseDeck(text) {
     const lines = text.trim().split("\n");
@@ -137,3 +188,5 @@ function renderChart(results, ctx) {
 window.addConditionSet = addConditionSet;
 window.saveConditionSets = saveConditionSets;
 window.loadConditionSets = loadConditionSets;
+window.saveCurrentDeck = saveCurrentDeck;
+window.loadSelectedDeck = loadSelectedDeck;
