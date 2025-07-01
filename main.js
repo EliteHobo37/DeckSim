@@ -203,7 +203,6 @@ function populateTypeDropdown(typeList = []) {
   const typeSet = new Set();
   for (const type in typeList) {
       typeSet.add(type);
-      typeSet.add(type.trim());
   }
 
   const dropdown = document.getElementById("typeSelect");
@@ -214,7 +213,7 @@ function populateTypeDropdown(typeList = []) {
   placeholder.value = "";
   dropdown.appendChild(placeholder);
     
-  for (const type in typeSet) {
+  for (const type in typeSet.values()) {
     console.log(type);
     const option = document.createElement("option");
     option.value = type.value;
