@@ -1,6 +1,6 @@
 
 // main.js
-import { runSimulation } from './simulate.js';
+import { simulate } from './simulate.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     const deckInput = document.getElementById("deckInput");
