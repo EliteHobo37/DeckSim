@@ -196,6 +196,24 @@ function updateConditionsDisplay() {
   }
 }
 
+function populateTypeDropdown(deckObjects) {
+  const typeSet = new Set();
+  deckObjects.forEach(card => {
+    card.types.forEach(type => {
+      typeSet.add(type.replace(/["']/g, "").trim());
+    });
+  });
+
+  const dropdown = document.getElementById("typeSelect");
+  dropdown.innerHTML = "";
+  Array.from(typeSet).sort().forEach(type => {
+    const option = document.createElement("option");
+    option.value = type;
+    option.textContent = type;
+    dropdown.appendChild(option);
+  });
+}
+
 function displayResults(results, container) {
     container.innerHTML = "<h3>Simulation Results:</h3>";
     for (let key in results) {
