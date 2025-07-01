@@ -87,7 +87,7 @@ function parseDeck(text) {
             deck.push({ name: name.trim(), types });
         }
     }
-    print(deck);
+    console.log(deck);
     return deck;
 }
 
