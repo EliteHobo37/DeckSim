@@ -210,7 +210,7 @@ function populateTypeDropdown(typeList = []) {
   placeholder.value = "";
   dropdown.appendChild(placeholder);
     
-  for (const type in typeList) {
+  for (const type of typeList) {
     console.log(type);
     const option = document.createElement("option");
     option.value = type;
