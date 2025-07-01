@@ -20,14 +20,14 @@
     </div>
 
     <label>Conditions</label>
-    <div id="conditionsList"></div>
-    <button id="add-condition">+ Add Condition</button>
+    <div id="conditionsContainer"></div>
+    <button onclick="addConditionSet()">➕ Add Condition Set</button>
 
     <div class="condition-management">
       <input type="text" id="condition-name" placeholder="Condition Set Name">
-      <button id="save-condition">💾 Save Set</button>
-      <select id="condition-sets"></select>
-      <button id="delete-condition">🗑️ Delete</button>
+      <button onclick="saveConditionSets()">💾 Save Set</button>
+      <select id="conditionList"></select>
+      <button onclick="deleteConditionSets()">🗑️ Delete Set</button>
     </div>
 
     <label>Mulligans (Commander allows 1 free mulligan)</label>
