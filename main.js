@@ -10,6 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const resultDiv = document.getElementById("results");
     const chartCanvas = document.getElementById("chart").getContext("2d");
 
+    parseBtn.addEventListener("click", () => {
+        const deck = parseDeck(deckInput.value);
+    });
+    
     runBtn.addEventListener("click", () => {
         const deck = parseDeck(deckInput.value);
         const conditions = getConditions();
@@ -91,8 +95,24 @@ function parseDeck(text) {
     return deck;
 }
 
+function extractCardTypes(deck) {
+  const typeSet = new Set();
+
+  for (const card of deck) {
+    // Each card is expected to be an array of card types
+    // e.g., ["Ramp", "Artifact"] or ["Land"] or ["Creature", "Draw"]
+    for (const type of card) {
+      typeSet.add(type.trim());
+    }
+  }
+
+  return Array.from(typeSet).sort();
+}
+
 function addConditionSet(name = "New Set", cardTypes = {}) {
   const container = document.getElementById("conditionsList");
+  const deckInput = document.getElementById("deckInput");
+  cardTypes = extractCardTypes(parseDeck(deckInput.value))
 
   const div = document.createElement("div");
   div.className = "condition-set";
@@ -191,4 +211,3 @@ window.saveConditionSets = saveConditionSets;
 window.loadConditionSets = loadConditionSets;
 window.saveCurrentDeck = saveCurrentDeck;
 window.loadSelectedDeck = loadSelectedDeck;
-window.parseDeck = parseDeck;
