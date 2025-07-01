@@ -213,7 +213,7 @@ function populateTypeDropdown(deckObjects = []) {
   const placeholder = document.createElement("option");
   placeholder.textContent = "-- Select a Type --";
   placeholder.value = "";
-  selector.appendChild(placeholder);
+  dropdown.appendChild(placeholder);
     
   for (const type in typeSet) {
     console.log(type);
