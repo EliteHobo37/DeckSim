@@ -133,3 +133,7 @@ function renderChart(results, ctx) {
         }
     });
 }
+
+window.addConditionSet = addConditionSet;
+window.saveConditionSets = saveConditionSets;
+window.loadConditionSets = loadConditionSets;
