@@ -105,8 +105,8 @@ function extractCardTypes(deck) {
       typeSet.add(type.trim());
     }
   }
-  console.log(typeSet);
-  return Array.from(typeSet).sort();
+  //console.log(typeSet);
+  return Array.from(typeSet.values()).sort();
 }
 
 function addConditionSet(name = "New Set", cardTypes = {}) {
@@ -200,11 +200,8 @@ function updateConditionsDisplay() {
 }
 
 function populateTypeDropdown(typeList = []) {
-  const typeSet = new Set();
-  for (const type in typeList) {
-      typeSet.add(type);
-  }
 
+  console.log(typeList)
   const dropdown = document.getElementById("typeSelect");
   dropdown.innerHTML = "";
 
@@ -213,7 +210,7 @@ function populateTypeDropdown(typeList = []) {
   placeholder.value = "";
   dropdown.appendChild(placeholder);
     
-  for (const type in typeSet.values()) {
+  for (const type in typeSet) {
     console.log(type);
     const option = document.createElement("option");
     option.value = type.value;
