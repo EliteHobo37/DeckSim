@@ -9,10 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const runBtn = document.getElementById("runSimBtn");
     const resultDiv = document.getElementById("results");
     const chartCanvas = document.getElementById("chart").getContext("2d");
-
-    parseBtn.addEventListener("click", () => {
-        const deck = parseDeck(deckInput.value);
-    });
     
     runBtn.addEventListener("click", () => {
         const deck = parseDeck(deckInput.value);
