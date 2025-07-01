@@ -23,7 +23,7 @@ textarea, input, select, button {
   border-radius: 5px;
 }
 
-textarea {
+textarea, input {
   margin-right: 0.5rem;
   box-sizing: border-box;
 }
