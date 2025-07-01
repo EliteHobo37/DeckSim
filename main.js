@@ -6,14 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const deckInput = document.getElementById("deckInput");
     const runBtn = document.getElementById("runSimBtn");
     const resultDiv = document.getElementById("results");
-    //const chartCanvas = document.getElementById("resultsChart").getContext("2d");
+    Const chartCanvas = document.getElementById("chart").getContext("2d");
 
     runBtn.addEventListener("click", () => {
         const deck = parseDeck(deckInput.value);
         const conditions = getConditions();
         const results = simulate(deck, conditions, [1, 1, 1], 7, 10000);
         displayResults(results, resultDiv);
-        //renderChart(results, chartCanvas);
+        renderChart(results, chartCanvas);
     });
 
     document.getElementById("pasteClipboard").addEventListener("click", async () => {
