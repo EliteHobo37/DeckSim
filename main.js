@@ -39,6 +39,56 @@ function parseDeck(text) {
     return deck;
 }
 
+function addConditionSet(name = "New Set", cardTypes = {}) {
+  const container = document.getElementById("conditionsList");
+
+  const div = document.createElement("div");
+  div.className = "condition-set";
+  div.innerHTML = `
+    <label>Set Name: <input type="text" class="setName" value="${name}" /></label><br/>
+    <div class="typesContainer">
+      ${Object.entries(cardTypes).map(([type, {min, max}]) => `
+        <label>${type} → 
+          Min: <input type="number" class="min" data-type="${type}" value="${min}" />
+          Max: <input type="number" class="max" data-type="${type}" value="${max}" />
+        </label><br/>
+      `).join("")}
+    </div>
+    <hr/>
+  `;
+  container.appendChild(div);
+}
+
+function saveConditionSets() {
+  const sets = [];
+  const setDivs = document.querySelectorAll("#conditionsContainer > div");
+  setDivs.forEach(div => {
+    const name = div.querySelector(".setName").value;
+    const typeInputs = div.querySelectorAll(".min, .max");
+    const card_type_counts = {};
+
+    for (let i = 0; i < typeInputs.length; i += 2) {
+      const type = typeInputs[i].dataset.type;
+      const min = parseInt(typeInputs[i].value);
+      const max = parseInt(typeInputs[i + 1].value);
+      card_type_counts[type] = { min, max };
+    }
+
+    sets.push({ name, card_type_counts });
+  });
+
+  localStorage.setItem("conditionsList", JSON.stringify(sets));
+  alert("Condition sets saved.");
+}
+
+function loadConditionSets() {
+  const saved = localStorage.getItem("conditionsList");
+  if (!saved) return alert("No saved condition sets.");
+  const parsed = JSON.parse(saved);
+  document.getElementById("conditionsContainer").innerHTML = "";
+  parsed.forEach(set => addConditionSet(set.name, set.card_type_counts));
+}
+
 function getConditions() {
     const conditionList = document.getElementById("conditionList");
     const conditions = [];
