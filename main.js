@@ -3,6 +3,7 @@
 import { simulate } from './simulate.js';
 
 document.addEventListener("DOMContentLoaded", updateDeckSelector);
+document.addEventListener("DOMContentLoaded", populateTypeDropdown);
 
 document.addEventListener("DOMContentLoaded", () => {
     const deckInput = document.getElementById("deckInput");
@@ -49,6 +50,7 @@ function loadSelectedDeck() {
   if (deckText) {
     document.getElementById("deckInput").value = deckText;
     document.getElementById("deckNameInput").value = selectedName;
+    
     const deckInput = document.getElementById("deckInput");
     const cardTypes = extractCardTypes(parseDeck(deckInput.value));
     populateTypeDropdown(cardTypes);
@@ -197,7 +199,7 @@ function updateConditionsDisplay() {
   }
 }
 
-function populateTypeDropdown(deckObjects) {
+function populateTypeDropdown(deckObjects = []) {
   const typeSet = new Set();
   for (const card in deckObjects) {
       for (const type in card.types) {
@@ -207,6 +209,12 @@ function populateTypeDropdown(deckObjects) {
 
   const dropdown = document.getElementById("typeSelect");
   dropdown.innerHTML = "";
+
+  const placeholder = document.createElement("option");
+  placeholder.textContent = "-- Select a Type --";
+  placeholder.value = "";
+  selector.appendChild(placeholder);
+    
   for (const type in typeSet) {
     const option = document.createElement("option");
     option.value = type;
