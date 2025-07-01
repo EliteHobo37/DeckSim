@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const deckInput = document.getElementById("deckInput");
     const runBtn = document.getElementById("runSimBtn");
     const resultDiv = document.getElementById("results");
-    Const chartCanvas = document.getElementById("chart").getContext("2d");
+    const chartCanvas = document.getElementById("chart").getContext("2d");
 
     runBtn.addEventListener("click", () => {
         const deck = parseDeck(deckInput.value);
