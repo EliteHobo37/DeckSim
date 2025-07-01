@@ -100,8 +100,6 @@ function extractCardTypes(deck) {
     // Each card is expected to be an array of card types
     // e.g., ["Ramp", "Artifact"] or ["Land"] or ["Creature", "Draw"]
     for (const type of card.types) {
-      console.log(card);
-      console.log(type);
       typeSet.add(type.trim());
     }
   }
