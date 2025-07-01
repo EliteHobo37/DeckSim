@@ -201,15 +201,15 @@ function updateConditionsDisplay() {
 
 function populateTypeDropdown(deckObjects) {
   const typeSet = new Set();
-  for (card in deckObjects) {
-      for (type in card.types) {
+  for (const card in deckObjects) {
+      for (const type in card.types) {
           typeSet.add(type.replace(/["']/g, "").trim());
     }
   }
 
   const dropdown = document.getElementById("typeSelect");
   dropdown.innerHTML = "";
-  for (type in typeSet) {
+  for (const type in typeSet) {
     const option = document.createElement("option");
     option.value = type;
     option.textContent = type;
