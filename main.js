@@ -191,3 +191,4 @@ window.saveConditionSets = saveConditionSets;
 window.loadConditionSets = loadConditionSets;
 window.saveCurrentDeck = saveCurrentDeck;
 window.loadSelectedDeck = loadSelectedDeck;
+window.parseDeck = parseDeck;
