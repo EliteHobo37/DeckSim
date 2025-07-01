@@ -48,6 +48,7 @@ function loadSelectedDeck() {
   const deckText = allDecks[selectedName];
   if (deckText) {
     document.getElementById("deckInput").value = deckText;
+    document.getElementById("deckNameInput").value = selectedName;
     alert(`Loaded deck: ${selectedName}`);
   } else {
     alert("Deck not found.");
