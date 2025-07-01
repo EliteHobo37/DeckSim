@@ -105,7 +105,7 @@ function extractCardTypes(deck) {
       typeSet.add(type.trim());
     }
   }
-
+  console.log(typeSet);
   return Array.from(typeSet).sort();
 }
 
