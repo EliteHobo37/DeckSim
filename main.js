@@ -78,6 +78,33 @@ function updateDeckSelector() {
   }
 }
 
+function parseDeckCsv(csvText) {
+  const lines = csvText.trim().split("\n");
+  const deck = [];
+
+  for (let line of lines) {
+    // Match CSV fields, including quoted text with commas
+    const regex = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
+    const matches = [...line.matchAll(regex)].map(m => m[0]);
+
+    const name = matches[1].replace(/^"|"$/g, ""); // Remove outer quotes
+    const types = matches[4]
+      .replace(/^"|"$/g, "") // Remove quotes
+      .split(",")
+      .map(t => t.trim());
+
+    const qty = parseInt(matches[0]);
+
+    for (let i = 0; i < qty; i++) {
+      deck.push({
+        name,
+        types,
+      });
+    }
+  }
+
+  return deck;
+}
 
 function parseDeck(text) {
     const lines = text.trim().split("\n");
@@ -95,7 +122,7 @@ function parseDeck(text) {
     return deck;
 }
 
-function extractCardTypes(deck) {
+function extractCardTypes(const deck) {
   const typeSet = new Set();
 
   for (const card of deck) {
@@ -200,7 +227,7 @@ function updateConditionsDisplay() {
 }
 
 function populateTypeDropdown(typeList = {}) {
-
+    
   console.log(typeList)
   const dropdown = document.getElementById("typeSelect");
   dropdown.innerHTML = "";
@@ -209,6 +236,10 @@ function populateTypeDropdown(typeList = {}) {
   placeholder.textContent = "-- Select a Type --";
   placeholder.value = "";
   dropdown.appendChild(placeholder);
+
+  if (typeList = {}) {
+      return;
+  }  
     
   for (const key in typeList) {
     console.log(typeList[key]);
