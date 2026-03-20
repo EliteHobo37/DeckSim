@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="app">
-    <div id="build-stamp" style="font-size:10px;opacity:0.4;text-align:right;margin-bottom:4px;">build: __BUILD_TIME__</div>
+    <div id="build-stamp" style="font-size:10px;opacity:0.4;text-align:right;margin-bottom:4px;">build: 2026-03-20T19:15:20Z</div>
     <h1>MTG Deck Simulator</h1>
 
     <h2>Deck Management</h2>
@@ -44,41 +44,21 @@
       <button id="loadDeckBtn">📂 Load Deck</button>
     </div>
 
-    <h2>Conditions</h2>
-    <div id="conditionEditor">
-      <label for="typeSelect">Card Type:</label>
-      <select id="typeSelect"></select>
+    <h2>Mulligan Conditions</h2>
+    <p style="font-size:13px;opacity:0.7;margin:4px 0 8px;">Keep a hand when ALL conditions below are met. Mulligan otherwise.</p>
 
-      <label>Min:</label>
-      <input type="number" id="minInput" value="1" style="width: 50px;" />
+    <div id="mulliganConditionsList"></div>
+    <button id="addMulliganConditionBtn">+ Add Condition</button>
 
-      <label>Max:</label>
-      <input type="number" id="maxInput" style="width: 50px;" />
-
-      <button id="addConditionBtn">➕ Add Condition</button>
+    <div class="btn-row" style="margin-top:8px;">
+      <button id="saveMulliganBtn">&#128190; Save</button>
+      <button id="loadMulliganBtn">&#128194; Load</button>
+      <button id="clearMulliganBtn">Clear</button>
     </div>
 
-    <ul id="conditionsList" style="padding-left: 1em;"></ul>
+    <label style="margin-top:16px;">Max Mulligans</label>
+    <input type="number" id="mulligans" value="3" min="0" max="6">
 
-    <div id="conditionsContainer"></div>
-
-    <button id="addConditionSetBtn">➕ Add Condition Set</button>
-    <input type="text" id="condition-name" placeholder="Condition Set Name">
-
-    <div class="btn-row">
-      <button id="deleteSetBtn">🗑️ Delete Set</button>
-      <button id="saveSetBtn">💾 Save Set</button>
-      <button id="loadSetBtn">📂 Load Set</button>
-    </div>
-
-    <label>Mulligans (Commander allows 1 free mulligan)</label>
-    <input type="number" id="mulligans" value="1" min="0" max="5">
-
-    <label>Fast Threshold (turns)</label>
-    <input type="number" id="fast-threshold" value="8" min="1" max="10">
-
-    <label>Slow Threshold (turns)</label>
-    <input type="number" id="slow-threshold" value="9" min="1" max="10">
 
     <button id="runSimBtn">▶ Run Simulation</button>
 
