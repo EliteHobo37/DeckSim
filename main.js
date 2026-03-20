@@ -1,6 +1,16 @@
 // main.js
 const BUILD_TIME = "2026-03-20T19:15:20Z";
 console.log(`%c⚙ DeckSim build: ${BUILD_TIME}`, "color: #0f0; font-weight: bold;");
+console.log('%c💡 Type forceRebuild() in console to clear cache and reload', "color: #aaa;");
+
+window.forceRebuild = async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => caches.delete(k)));
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r => r.unregister()));
+    console.log("Cache cleared, reloading...");
+    location.reload(true);
+};
 
 import { simulate } from './simulate.js';
 
