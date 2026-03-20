@@ -1,4 +1,6 @@
 // main.js
+import { simulate } from './simulate.js';
+
 const BUILD_TIME = "__BUILD_TIME__";
 console.log(`%c⚙ DeckSim build: ${BUILD_TIME}`, "color: #0f0; font-weight: bold;");
 console.log('%c💡 Type forceRebuild() in console to clear cache and reload', "color: #aaa;");
@@ -12,8 +14,6 @@ window.forceRebuild = async () => {
     console.log("Cache cleared, reloading...");
     location.reload(true);
 };
-
-import { simulate } from './simulate.js';
 
 // Tracks the current condition filters (type → {min, max})
 let currentConditions = {};
