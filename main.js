@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const text = await navigator.clipboard.readText();
             deckInput.value = text;
-        } catch {
+        } catch (err) {
             alert("Clipboard access denied. Please paste manually.");
         }
     });
