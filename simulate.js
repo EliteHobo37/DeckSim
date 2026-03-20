@@ -61,44 +61,32 @@ function checkConditions(hand, conditions) {
 
 // A card matches a condition if it satisfies ALL specified filters
 function cardMatchesCondition(card, cond) {
-  // Type filter: card must have ALL specified types
-  if (cond.types && cond.types.length > 0) {
-    for (var i = 0; i < cond.types.length; i++) {
-      if (card.types.indexOf(cond.types[i]) === -1) {
+  // Category filter: card must have ALL specified categories
+  if (cond.categories && cond.categories.length > 0) {
+    for (var i = 0; i < cond.categories.length; i++) {
+      if ((card.categories || []).indexOf(cond.categories[i]) === -1) {
         return false;
       }
     }
   }
 
-  // Max CMC filter
-  if (cond.maxCmc != null) {
-    var cmc = parseCmc(card.manaCost || "");
-    if (cmc > cond.maxCmc) {
-      return false;
+  // Type filter: card must have ALL specified types
+  if (cond.types && cond.types.length > 0) {
+    for (var i = 0; i < cond.types.length; i++) {
+      if ((card.types || []).indexOf(cond.types[i]) === -1) {
+        return false;
+      }
     }
+  }
+
+  // Mana value range filter (mv is stored as a plain integer on the card)
+  if (cond.mvMin != null || cond.mvMax != null) {
+    var mv = card.mv != null ? card.mv : Infinity;
+    if (cond.mvMin != null && mv < cond.mvMin) { return false; }
+    if (cond.mvMax != null && mv > cond.mvMax) { return false; }
   }
 
   return true;
-}
-
-// Parse converted mana cost from a mana cost string like {2}{G}{G}
-function parseCmc(manaCost) {
-  if (!manaCost) { return 0; }
-  var total = 0;
-  var regex = /\{([^}]+)\}/g;
-  var match;
-  while ((match = regex.exec(manaCost)) !== null) {
-    var sym = match[1];
-    if (sym === "X" || sym === "x") {
-      // X counts as 0
-    } else if (!isNaN(parseInt(sym))) {
-      total += parseInt(sym);
-    } else {
-      // Single color/hybrid symbol counts as 1
-      total += 1;
-    }
-  }
-  return total;
 }
 
 function shuffle(array) {
