@@ -339,23 +339,24 @@ function addMulliganConditionRow(savedCondition) {
         "</div>";
 
     // Build header via DOM so inline styles are never stripped by style.css
-    var header  = document.createElement("div");
-    header.style.cssText = "display:flex;align-items:center;padding:8px 10px;background:#2a2a2a;cursor:pointer;gap:8px;user-select:none;";
+    var header = document.createElement("div");
+    header.style.cssText = "display:flex;align-items:center;padding:6px 10px;background:#2a2a2a;cursor:pointer;gap:6px;user-select:none;";
 
     var icon = document.createElement("span");
-    icon.style.cssText = "font-size:11px;opacity:0.6;width:12px;";
+    icon.style.cssText = "font-size:11px;opacity:0.6;width:12px;flex-shrink:0;";
     icon.innerHTML = "&#9660;";
 
-    var summary = document.createElement("span");
-    summary.style.cssText = "flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;";
-
     var removeBtn = document.createElement("button");
-    removeBtn.textContent = "Remove";
-    removeBtn.style.cssText = "font-size:12px;padding:2px 8px;flex-shrink:0;";
+    removeBtn.innerHTML = "&#10005;";
+    removeBtn.title = "Remove";
+    removeBtn.style.cssText = "font-size:12px;padding:1px 6px;line-height:1;flex-shrink:0;";
+
+    var summary = document.createElement("span");
+    summary.style.cssText = "flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.85;";
 
     header.appendChild(icon);
-    header.appendChild(summary);
     header.appendChild(removeBtn);
+    header.appendChild(summary);
 
     // Parse detail from html string then insert both into row
     var tmp = document.createElement("div");
@@ -521,3 +522,4 @@ function renderChart(results, ctx, maxMulligans) {
         }
     });
 }
+ 
