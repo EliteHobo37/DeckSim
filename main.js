@@ -1,5 +1,5 @@
 // main.js
-const BUILD_TIME = "2026-03-20T19:15:20Z";
+const BUILD_TIME = "__BUILD_TIME__";
 console.log(`%c⚙ DeckSim build: ${BUILD_TIME}`, "color: #0f0; font-weight: bold;");
 console.log('%c💡 Type forceRebuild() in console to clear cache and reload', "color: #aaa;");
 
