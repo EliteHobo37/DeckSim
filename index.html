@@ -72,8 +72,24 @@
     </div>
 
     <button id="exitBtn">❌ Exit</button>
+    <button id="debugBtn">🐛 Debug Console</button>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+  <script>
+    // Initialize Eruda (mobile-friendly DevTools) but keep it hidden until toggled
+    eruda.init();
+    eruda.hide();
+
+    document.getElementById("debugBtn").addEventListener("click", () => {
+      // eruda._isShow is the internal visibility flag
+      if (eruda._isShow) {
+        eruda.hide();
+      } else {
+        eruda.show();
+      }
+    });
+  </script>
   <script type="module" src="main.js"></script>
 </body>
 </html>
