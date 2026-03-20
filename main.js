@@ -338,20 +338,32 @@ function addMulliganConditionRow(savedCondition) {
         "</div>" +
         "</div>";
 
-    var headerHtml =
-        "<div class='condHeader' style='display:flex;align-items:center;padding:8px 10px;background:#2a2a2a;cursor:pointer;gap:8px;'>" +
-        "<span class='condToggleIcon' style='font-size:11px;opacity:0.6;'>&#9660;</span>" +
-        "<span class='condSummary' style='flex:1;font-size:13px;'></span>" +
-        "<button class='removeCondBtn' style='font-size:12px;padding:2px 8px;'>Remove</button>" +
-        "</div>";
+    // Build header via DOM so inline styles are never stripped by style.css
+    var header  = document.createElement("div");
+    header.style.cssText = "display:flex;align-items:center;padding:8px 10px;background:#2a2a2a;cursor:pointer;gap:8px;user-select:none;";
 
-    row.innerHTML = headerHtml + detailHtml;
+    var icon = document.createElement("span");
+    icon.style.cssText = "font-size:11px;opacity:0.6;width:12px;";
+    icon.innerHTML = "&#9660;";
 
-    // Wire up collapse toggle
-    var header  = row.querySelector(".condHeader");
-    var detail  = row.querySelector(".condDetail");
-    var icon    = row.querySelector(".condToggleIcon");
-    var summary = row.querySelector(".condSummary");
+    var summary = document.createElement("span");
+    summary.style.cssText = "flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;";
+
+    var removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove";
+    removeBtn.style.cssText = "font-size:12px;padding:2px 8px;flex-shrink:0;";
+
+    header.appendChild(icon);
+    header.appendChild(summary);
+    header.appendChild(removeBtn);
+
+    // Parse detail from html string then insert both into row
+    var tmp = document.createElement("div");
+    tmp.innerHTML = detailHtml;
+    var detail = tmp.firstChild;
+
+    row.appendChild(header);
+    row.appendChild(detail);
 
     function collapse() {
         detail.style.display = "none";
@@ -369,7 +381,7 @@ function addMulliganConditionRow(savedCondition) {
         if (detail.style.display === "none") { expand(); } else { collapse(); }
     });
 
-    row.querySelector(".removeCondBtn").addEventListener("click", function() {
+    removeBtn.addEventListener("click", function() {
         list.removeChild(row);
     });
 
@@ -472,6 +484,7 @@ function renderChart(results, ctx, maxMulligans) {
 
     chartInstance = new Chart(ctx, {
         type: 'bar',
+        plugins: [ChartDataLabels],
         data: {
             labels: labels,
             datasets: [{
@@ -489,12 +502,22 @@ function renderChart(results, ctx, maxMulligans) {
                     callbacks: {
                         label: function(ctx) { return ctx.raw + "%"; }
                     }
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    formatter: function(value) {
+                        return parseFloat(value) > 0 ? value + "%" : "";
+                    },
+                    font: { size: 11, weight: 'bold' },
+                    color: '#eee'
                 }
             },
             scales: {
                 y: { beginAtZero: true, max: 100, title: { display: true, text: '% of games' } },
                 x: { title: { display: true, text: 'Mulligans taken to meet conditions' } }
-            }
+            },
+            layout: { padding: { top: 20 } }
         }
     });
 }
