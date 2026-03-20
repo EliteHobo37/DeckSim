@@ -296,76 +296,141 @@ function buildConditionSummary(row) {
     return parts.length ? parts.join("  |  ") : "Any card x1";
 }
 
+function makeDomLabel(text, input) {
+    var lbl = document.createElement("label");
+    lbl.style.cssText = "font-size:13px;display:block;";
+    lbl.appendChild(document.createTextNode(text));
+    lbl.appendChild(document.createElement("br"));
+    lbl.appendChild(input);
+    return lbl;
+}
+
+function makeNumberInput(cssClass, val, placeholder) {
+    var inp = document.createElement("input");
+    inp.type = "number";
+    inp.className = cssClass;
+    inp.value = val;
+    inp.placeholder = placeholder || "any";
+    inp.style.cssText = "width:100%;box-sizing:border-box;";
+    return inp;
+}
+
 function addMulliganConditionRow(savedCondition) {
     var list     = document.getElementById("mulliganConditionsList");
     var deckData = getDeckData();
-    var row      = document.createElement("div");
-    row.className = "condition-row";
-    row.style.cssText = "border:1px solid #444;border-radius:6px;margin-bottom:8px;overflow:hidden;";
 
     var savedCats  = savedCondition ? (savedCondition.categories || []) : [];
     var savedTypes = savedCondition ? (savedCondition.types || [])      : [];
+    var mvMinVal   = (savedCondition && savedCondition.mvMin != null) ? savedCondition.mvMin : "";
+    var mvMaxVal   = (savedCondition && savedCondition.mvMax != null) ? savedCondition.mvMax : "";
+    var minVal     = (savedCondition && savedCondition.min  != null)  ? savedCondition.min   : 1;
+    var maxVal     = (savedCondition && savedCondition.max  != null && savedCondition.max !== Infinity) ? savedCondition.max : "";
 
-    var catSelect  = buildMultiSelect("catSelect",  deckData.categories, savedCats,  "Any category");
-    var typeSelect = buildMultiSelect("typeSelect",  deckData.types,      savedTypes, "Any type");
+    // Outer row - no className to avoid style.css interference
+    var row = document.createElement("div");
+    row.style.cssText = "display:block;border:1px solid #444;border-radius:6px;margin-bottom:8px;overflow:hidden;";
 
-    var noDeckhint = (!catSelect && !typeSelect)
-        ? "<p style='font-size:12px;opacity:0.6;margin:0 0 8px;'>Load a deck to enable category/type filters.</p>"
-        : "";
-
-    var mvMinVal = (savedCondition && savedCondition.mvMin != null) ? savedCondition.mvMin : "";
-    var mvMaxVal = (savedCondition && savedCondition.mvMax != null) ? savedCondition.mvMax : "";
-    var minVal   = (savedCondition && savedCondition.min  != null)  ? savedCondition.min   : 1;
-    var maxVal   = (savedCondition && savedCondition.max  != null && savedCondition.max !== Infinity) ? savedCondition.max : "";
-
-    var selectRow = "";
-    if (catSelect || typeSelect) {
-        selectRow =
-            "<div style='display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;'>" +
-            (catSelect  ? "<div style='flex:1;min-width:140px;'><label style='font-size:11px;opacity:0.7;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;'>Categories</label>" + catSelect  + "</div>" : "") +
-            (typeSelect ? "<div style='flex:1;min-width:140px;'><label style='font-size:11px;opacity:0.7;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;'>Types</label>"      + typeSelect + "</div>" : "") +
-            "</div>";
-    }
-
-    var detailHtml =
-        "<div class='condDetail' style='padding:10px;'>" +
-        noDeckhint + selectRow +
-        "<div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;'>" +
-        "<label style='font-size:13px;'>MV min<br/><input type='number' class='condMvMin' value='" + mvMinVal + "' placeholder='any' style='width:100%;box-sizing:border-box;' /></label>" +
-        "<label style='font-size:13px;'>MV max<br/><input type='number' class='condMvMax' value='" + mvMaxVal + "' placeholder='any' style='width:100%;box-sizing:border-box;' /></label>" +
-        "<label style='font-size:13px;'>Count min<br/><input type='number' class='condMin' value='" + minVal + "' min='0' style='width:100%;box-sizing:border-box;' /></label>" +
-        "<label style='font-size:13px;'>Count max<br/><input type='number' class='condMax' value='" + maxVal + "' placeholder='any' style='width:100%;box-sizing:border-box;' /></label>" +
-        "</div>" +
-        "</div>";
-
-    // Build header via DOM so inline styles are never stripped by style.css
+    // - Header -
     var header = document.createElement("div");
-    header.style.cssText = "display:flex;align-items:center;padding:6px 10px;background:#2a2a2a;cursor:pointer;gap:6px;user-select:none;";
+    header.style.cssText = "display:flex;flex-direction:row;align-items:center;padding:7px 10px;background:#2a2a2a;cursor:pointer;gap:8px;user-select:none;box-sizing:border-box;width:100%;";
 
     var icon = document.createElement("span");
-    icon.style.cssText = "font-size:11px;opacity:0.6;width:12px;flex-shrink:0;";
+    icon.style.cssText = "font-size:11px;opacity:0.6;flex-shrink:0;width:14px;text-align:center;";
     icon.innerHTML = "&#9660;";
 
     var removeBtn = document.createElement("button");
     removeBtn.innerHTML = "&#10005;";
-    removeBtn.title = "Remove";
-    removeBtn.style.cssText = "font-size:12px;padding:1px 6px;line-height:1;flex-shrink:0;width:auto;min-width:0;";
+    removeBtn.title = "Remove condition";
+    removeBtn.style.cssText = "display:inline-block;width:24px;height:24px;min-width:0;max-width:24px;padding:0;line-height:24px;text-align:center;font-size:13px;flex-shrink:0;cursor:pointer;border-radius:4px;";
 
     var summary = document.createElement("span");
-    summary.style.cssText = "flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.85;";
+    summary.style.cssText = "flex:1;font-size:13px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;";
 
     header.appendChild(icon);
     header.appendChild(removeBtn);
     header.appendChild(summary);
 
-    // Parse detail from html string then insert both into row
-    var tmp = document.createElement("div");
-    tmp.innerHTML = detailHtml;
-    var detail = tmp.firstChild;
+    // - Detail panel -
+    var detail = document.createElement("div");
+    detail.style.cssText = "display:block;padding:10px;box-sizing:border-box;";
+
+    // Dropdowns row
+    if (deckData.categories.length > 0 || deckData.types.length > 0) {
+        var dropRow = document.createElement("div");
+        dropRow.style.cssText = "display:flex;flex-direction:row;gap:16px;flex-wrap:wrap;margin-bottom:10px;";
+
+        if (deckData.categories.length > 0) {
+            var catWrap = document.createElement("div");
+            catWrap.style.cssText = "flex:1;min-width:130px;";
+            var catLbl = document.createElement("label");
+            catLbl.style.cssText = "font-size:11px;opacity:0.7;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;";
+            catLbl.textContent = "Categories";
+            var catSel = document.createElement("select");
+            catSel.className = "catSelect";
+            catSel.multiple = true;
+            catSel.style.cssText = "width:100%;min-width:0;max-height:110px;";
+            for (var i = 0; i < deckData.categories.length; i++) {
+                var opt = document.createElement("option");
+                opt.value = deckData.categories[i];
+                opt.textContent = deckData.categories[i];
+                opt.selected = savedCats.indexOf(deckData.categories[i]) !== -1;
+                catSel.appendChild(opt);
+            }
+            catWrap.appendChild(catLbl);
+            catWrap.appendChild(catSel);
+            dropRow.appendChild(catWrap);
+        }
+
+        if (deckData.types.length > 0) {
+            var typeWrap = document.createElement("div");
+            typeWrap.style.cssText = "flex:1;min-width:130px;";
+            var typeLbl = document.createElement("label");
+            typeLbl.style.cssText = "font-size:11px;opacity:0.7;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;";
+            typeLbl.textContent = "Types";
+            var typeSel = document.createElement("select");
+            typeSel.className = "typeSelect";
+            typeSel.multiple = true;
+            typeSel.style.cssText = "width:100%;min-width:0;max-height:110px;";
+            for (var j = 0; j < deckData.types.length; j++) {
+                var topt = document.createElement("option");
+                topt.value = deckData.types[j];
+                topt.textContent = deckData.types[j];
+                topt.selected = savedTypes.indexOf(deckData.types[j]) !== -1;
+                typeSel.appendChild(topt);
+            }
+            typeWrap.appendChild(typeLbl);
+            typeWrap.appendChild(typeSel);
+            dropRow.appendChild(typeWrap);
+        }
+
+        detail.appendChild(dropRow);
+    } else {
+        var hint = document.createElement("p");
+        hint.style.cssText = "font-size:12px;opacity:0.6;margin:0 0 8px;";
+        hint.textContent = "Load a deck to enable category/type filters.";
+        detail.appendChild(hint);
+    }
+
+    // Number inputs grid
+    var grid = document.createElement("div");
+    grid.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:8px;";
+
+    var mvMinInp  = makeNumberInput("condMvMin",  mvMinVal, "any");
+    var mvMaxInp  = makeNumberInput("condMvMax",  mvMaxVal, "any");
+    var cntMinInp = makeNumberInput("condMin",    minVal,   "");
+    var cntMaxInp = makeNumberInput("condMax",    maxVal,   "any");
+    cntMinInp.min = "0";
+
+    grid.appendChild(makeDomLabel("MV min",    mvMinInp));
+    grid.appendChild(makeDomLabel("MV max",    mvMaxInp));
+    grid.appendChild(makeDomLabel("Count min", cntMinInp));
+    grid.appendChild(makeDomLabel("Count max", cntMaxInp));
+    detail.appendChild(grid);
 
     row.appendChild(header);
     row.appendChild(detail);
 
+    // - Collapse / expand -
     function collapse() {
         detail.style.display = "none";
         icon.innerHTML = "&#9654;";
@@ -378,17 +443,16 @@ function addMulliganConditionRow(savedCondition) {
     }
 
     header.addEventListener("click", function(e) {
-        if (e.target.classList.contains("removeCondBtn")) { return; }
+        if (e.target === removeBtn) { return; }
         if (detail.style.display === "none") { expand(); } else { collapse(); }
     });
 
-    removeBtn.addEventListener("click", function() {
+    removeBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
         list.removeChild(row);
     });
 
     list.appendChild(row);
-
-    // Start collapsed if restoring a saved condition, expanded if brand new
     if (savedCondition) { collapse(); } else { expand(); }
 }
 
@@ -522,4 +586,3 @@ function renderChart(results, ctx, maxMulligans) {
         }
     });
 }
- 
