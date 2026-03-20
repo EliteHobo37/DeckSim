@@ -20,14 +20,14 @@
     <div id="csvExampleModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
       <div style="background:#1e1e1e;color:#eee;padding:24px;border-radius:8px;max-width:480px;width:90%;font-family:monospace;">
         <h3 style="margin-top:0;">Expected CSV Format</h3>
-        <p>Each line: <strong>quantity, name, type1, type2, ...</strong></p>
-        <p>Card names with commas must be wrapped in quotes.</p>
-        <pre style="background:#111;padding:12px;border-radius:4px;overflow-x:auto;font-size:13px;">4,Sol Ring,Ramp,Artifact
-2,Cultivate,Ramp,Land
-1,"Rocco, Cabaretti Caterer",Creature,Tutor
-10,Forest,Land
-3,Counterspell,Counterspell</pre>
-        <p style="font-size:12px;color:#aaa;">Columns: qty &mdash; name &mdash; one or more types</p>
+        <p>Each line: <strong>quantity, name, mana cost, types</strong></p>
+        <p>Types are comma-separated in the fourth column, wrapped in quotes. Card names with commas must also be quoted.</p>
+        <pre style="background:#111;padding:12px;border-radius:4px;overflow-x:auto;font-size:13px;">4,Sol Ring,{2},"Artifact"
+2,Cultivate,{2}{G},"Sorcery"
+1,"Rocco, Cabaretti Caterer",{X}{R}{G},"Legendary,Creature"
+10,Forest,,"Basic,Land"
+3,Counterspell,{U}{U},"Instant"</pre>
+        <p style="font-size:12px;color:#aaa;">Columns: qty &mdash; name &mdash; mana cost &mdash; quoted comma-separated types</p>
         <button id="csvExampleClose" style="margin-top:8px;padding:8px 16px;">Close</button>
       </div>
     </div>
