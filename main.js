@@ -345,7 +345,6 @@ function renderChart(results, ctx) {
         }
     });
 }
-    });
 
     // ── Deck Management ──────────────────────────────────────────────
     document.getElementById("saveDeckBtn").addEventListener("click", saveCurrentDeck);
@@ -378,7 +377,6 @@ function renderChart(results, ctx) {
             alert("Failed to clear cache: " + err.message);
         }
     });
-});
 
 // ── Deck Functions ────────────────────────────────────────────────────
 
