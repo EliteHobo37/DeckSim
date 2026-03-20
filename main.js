@@ -58,6 +58,19 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("saveSetBtn").addEventListener("click", saveConditionSets);
     document.getElementById("loadSetBtn").addEventListener("click", loadConditionSets);
 
+    // CSV Example
+    document.getElementById("csvExampleBtn").addEventListener("click", function() {
+        document.getElementById("csvExampleModal").style.display = "flex";
+    });
+    document.getElementById("csvExampleClose").addEventListener("click", function() {
+        document.getElementById("csvExampleModal").style.display = "none";
+    });
+    document.getElementById("csvExampleModal").addEventListener("click", function(e) {
+        if (e.target === document.getElementById("csvExampleModal")) {
+            document.getElementById("csvExampleModal").style.display = "none";
+        }
+    });
+
     // Exit
     document.getElementById("exitBtn").addEventListener("click", function() { window.close(); });
 
@@ -134,18 +147,48 @@ function updateDeckSelector() {
 
 // Parsing
 
+function parseCsvLine(line) {
+    var fields = [];
+    var current = "";
+    var inQuotes = false;
+    for (var i = 0; i < line.length; i++) {
+        var ch = line[i];
+        if (ch === "\"" && !inQuotes) {
+            inQuotes = true;
+        } else if (ch === "\"" && inQuotes) {
+            // check for escaped quote ""
+            if (i + 1 < line.length && line[i + 1] === "\"") {
+                current += "\"";
+                i++;
+            } else {
+                inQuotes = false;
+            }
+        } else if (ch === "," && !inQuotes) {
+            fields.push(current.trim());
+            current = "";
+        } else {
+            current += ch;
+        }
+    }
+    fields.push(current.trim());
+    return fields;
+}
+
 function parseDeck(text) {
     var lines = text.trim().split("\n");
     var deck  = [];
 
     for (var i = 0; i < lines.length; i++) {
-        var parts = lines[i].split(",");
-        var qty   = parseInt(parts[0].trim());
-        var name  = parts[1].trim();
+        var line = lines[i].trim();
+        if (!line) { continue; }
+        var parts = parseCsvLine(line);
+        var qty   = parseInt(parts[0]);
+        var name  = parts[1] || "";
         var types = [];
         for (var j = 2; j < parts.length; j++) {
-            types.push(parts[j].trim());
+            if (parts[j]) { types.push(parts[j]); }
         }
+        if (isNaN(qty) || qty <= 0 || !name) { continue; }
         for (var k = 0; k < qty; k++) {
             deck.push({ name: name, types: types });
         }
