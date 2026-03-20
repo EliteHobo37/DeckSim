@@ -14,45 +14,44 @@
     <h2>Deck Management</h2>
     <label for="deckInput">Deck List (CSV Format)</label>
     <textarea id="deckInput" rows="10"></textarea>
+
     <label for="deckNameInput">Deck Name:</label>
     <input type="text" id="deckNameInput" placeholder="My Bello Deck" />
+
     <label for="deckSelector">Load Deck:</label>
     <select id="deckSelector"></select>
+
     <div class="btn-row">
       <button id="pasteClipboard">📋 Paste from Clipboard</button>
-      <button onclick="saveCurrentDeck()">💾 Save Deck</button>
-      <button onclick="loadSelectedDeck()">📂 Load Deck</button>
+      <button id="saveDeckBtn">💾 Save Deck</button>
+      <button id="loadDeckBtn">📂 Load Deck</button>
     </div>
-    
+
     <h2>Conditions</h2>
-  
     <div id="conditionEditor">
       <label for="typeSelect">Card Type:</label>
       <select id="typeSelect"></select>
-    
+
       <label>Min:</label>
       <input type="number" id="minInput" value="1" style="width: 50px;" />
-    
+
       <label>Max:</label>
       <input type="number" id="maxInput" style="width: 50px;" />
-    
-      <button onclick="addCondition()">➕ Add Condition</button>
+
+      <button id="addConditionBtn">➕ Add Condition</button>
     </div>
-    
+
     <ul id="conditionsList" style="padding-left: 1em;"></ul>
 
-    
     <div id="conditionsContainer"></div>
-    <button onclick="addConditionSet()">➕ Add Condition Set</button>
 
+    <button id="addConditionSetBtn">➕ Add Condition Set</button>
     <input type="text" id="condition-name" placeholder="Condition Set Name">
+
     <div class="btn-row">
-      <button onclick="deleteConditionSets()">🗑️ Delete Set</button>
-      <button onclick="saveConditionSets()">💾 Save Set</button>
-      <button onclick="loadConditionSets()">📂 Load Set</button>
-    </div>
-    <div id="conditionsList" style="overflow-x: auto; max-height: 300px;">
-    <!-- Dynamically populated condition sets will go here -->
+      <button id="deleteSetBtn">🗑️ Delete Set</button>
+      <button id="saveSetBtn">💾 Save Set</button>
+      <button id="loadSetBtn">📂 Load Set</button>
     </div>
 
     <label>Mulligans (Commander allows 1 free mulligan)</label>
@@ -66,13 +65,13 @@
 
     <button id="runSimBtn">▶ Run Simulation</button>
 
-    <div class="results">
+    <div id="results" class="results">
       <div id="fast-label"></div>
       <div id="slow-label"></div>
       <canvas id="chart" width="400" height="200"></canvas>
     </div>
 
-    <button onclick="window.close()">❌ Exit</button>
+    <button id="exitBtn">❌ Exit</button>
   </div>
 
   <script type="module" src="main.js"></script>
