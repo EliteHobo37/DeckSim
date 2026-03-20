@@ -1,0 +1,22 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inject build timestamp
+        run: |
+          BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          sed -i "s/__BUILD_TIME__/$BUILD_TIME/" main.js
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - uses: actions/deploy-pages@v4
