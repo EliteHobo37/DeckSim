@@ -9,12 +9,28 @@
 </head>
 <body>
   <div class="app">
-    <div id="build-stamp" style="font-size:10px;opacity:0.4;text-align:right;margin-bottom:4px;">build: __BUILD_TIME__</div>
+    <div id="build-stamp" style="font-size:10px;opacity:0.4;text-align:right;margin-bottom:4px;">build: 2026-03-20T19:15:20Z</div>
     <h1>MTG Deck Simulator</h1>
 
     <h2>Deck Management</h2>
     <label for="deckInput">Deck List (CSV Format)</label>
+    <button id="csvExampleBtn">? CSV Format</button>
     <textarea id="deckInput" rows="10"></textarea>
+
+    <div id="csvExampleModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+      <div style="background:#1e1e1e;color:#eee;padding:24px;border-radius:8px;max-width:480px;width:90%;font-family:monospace;">
+        <h3 style="margin-top:0;">Expected CSV Format</h3>
+        <p>Each line: <strong>quantity, name, type1, type2, ...</strong></p>
+        <p>Card names with commas must be wrapped in quotes.</p>
+        <pre style="background:#111;padding:12px;border-radius:4px;overflow-x:auto;font-size:13px;">4,Sol Ring,Ramp,Artifact
+2,Cultivate,Ramp,Land
+1,"Rocco, Cabaretti Caterer",Creature,Tutor
+10,Forest,Land
+3,Counterspell,Counterspell</pre>
+        <p style="font-size:12px;color:#aaa;">Columns: qty &mdash; name &mdash; one or more types</p>
+        <button id="csvExampleClose" style="margin-top:8px;padding:8px 16px;">Close</button>
+      </div>
+    </div>
 
     <label for="deckNameInput">Deck Name:</label>
     <input type="text" id="deckNameInput" placeholder="My Bello Deck" />
@@ -76,14 +92,11 @@
     <button id="updateCacheBtn">🔄 Update Cache</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
   <script>
     eruda.init();
   </script>
   <script type="module" src="main.js"></script>
-</body>
-</html>
 </body>
 </html>
