@@ -181,16 +181,22 @@ function parseDeck(text) {
     for (var i = 0; i < lines.length; i++) {
         var line = lines[i].trim();
         if (!line) { continue; }
-        var parts = parseCsvLine(line);
-        var qty   = parseInt(parts[0]);
-        var name  = parts[1] || "";
-        var types = [];
-        for (var j = 2; j < parts.length; j++) {
-            if (parts[j]) { types.push(parts[j]); }
+        var parts    = parseCsvLine(line);
+        var qty      = parseInt(parts[0]);
+        var name     = parts[1] || "";
+        var manaCost = parts[2] || "";
+        // col 4: comma-separated types inside quotes e.g. "Legendary,Artifact,Creature"
+        var types    = [];
+        if (parts[3]) {
+            var typeWords = parts[3].split(",");
+            for (var t = 0; t < typeWords.length; t++) {
+                var word = typeWords[t].trim();
+                if (word) { types.push(word); }
+            }
         }
         if (isNaN(qty) || qty <= 0 || !name) { continue; }
         for (var k = 0; k < qty; k++) {
-            deck.push({ name: name, types: types });
+            deck.push({ name: name, manaCost: manaCost, types: types });
         }
     }
     return deck;
