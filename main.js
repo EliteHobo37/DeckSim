@@ -243,13 +243,17 @@ function extractCardTypes(deck) {
 function getDeckData() {
     var deckText = document.getElementById("deckInput").value;
     if (!deckText.trim()) { return { categories: [], types: [] }; }
-    var deck = parseDeck(deckText);
-    return { categories: extractCardCategories(deck), types: extractCardTypes(deck) };
+    var deck       = parseDeck(deckText);
+    var types      = extractCardTypes(deck);
+    var typeSet    = {};
+    for (var i = 0; i < types.length; i++) { typeSet[types[i]] = true; }
+    var categories = extractCardCategories(deck).filter(function(c) { return !typeSet[c]; });
+    return { categories: categories, types: types };
 }
 
 function buildMultiSelect(cssClass, items, savedList, placeholder) {
     if (items.length === 0) { return ""; }
-    var html = "<select class='" + cssClass + "' multiple style='min-width:120px;max-width:180px;'>";
+    var html = "<select class='" + cssClass + "' multiple style='width:100%;min-width:120px;max-height:120px;'>";
     html += "<option value='' disabled>" + placeholder + "</option>";
     for (var i = 0; i < items.length; i++) {
         var sel = (savedList && savedList.indexOf(items[i]) !== -1) ? " selected" : "";
@@ -269,12 +273,35 @@ function getSelectValues(select) {
     return values;
 }
 
+function buildConditionSummary(row) {
+    var catEl    = row.querySelector(".catSelect");
+    var typeEl   = row.querySelector(".typeSelect");
+    var cats     = catEl  ? getSelectValues(catEl)  : [];
+    var types    = typeEl ? getSelectValues(typeEl) : [];
+    var mvMin    = row.querySelector(".condMvMin").value.trim();
+    var mvMax    = row.querySelector(".condMvMax").value.trim();
+    var cntMin   = row.querySelector(".condMin").value.trim();
+    var cntMax   = row.querySelector(".condMax").value.trim();
+
+    var parts = [];
+    if (cats.length)  { parts.push("Cat: " + cats.join(", ")); }
+    if (types.length) { parts.push("Type: " + types.join(", ")); }
+    if (mvMin || mvMax) {
+        parts.push("MV: " + (mvMin || "0") + "-" + (mvMax || "any"));
+    }
+    var countPart = "x" + (cntMin || "1");
+    if (cntMax) { countPart += "-" + cntMax; }
+    parts.push(countPart);
+
+    return parts.length ? parts.join("  |  ") : "Any card x1";
+}
+
 function addMulliganConditionRow(savedCondition) {
     var list     = document.getElementById("mulliganConditionsList");
     var deckData = getDeckData();
     var row      = document.createElement("div");
     row.className = "condition-row";
-    row.style.cssText = "border:1px solid #444;border-radius:6px;padding:10px;margin-bottom:8px;";
+    row.style.cssText = "border:1px solid #444;border-radius:6px;margin-bottom:8px;overflow:hidden;";
 
     var savedCats  = savedCondition ? (savedCondition.categories || []) : [];
     var savedTypes = savedCondition ? (savedCondition.types || [])      : [];
@@ -283,7 +310,7 @@ function addMulliganConditionRow(savedCondition) {
     var typeSelect = buildMultiSelect("typeSelect",  deckData.types,      savedTypes, "Any type");
 
     var noDeckhint = (!catSelect && !typeSelect)
-        ? "<p style='font-size:12px;opacity:0.5;margin:0 0 6px;'>Load a deck to enable category/type filters.</p>"
+        ? "<p style='font-size:12px;opacity:0.6;margin:0 0 8px;'>Load a deck to enable category/type filters.</p>"
         : "";
 
     var mvMinVal = (savedCondition && savedCondition.mvMin != null) ? savedCondition.mvMin : "";
@@ -294,27 +321,62 @@ function addMulliganConditionRow(savedCondition) {
     var selectRow = "";
     if (catSelect || typeSelect) {
         selectRow =
-            "<div style='display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;align-items:flex-start;'>" +
-            (catSelect  ? "<div><label style='font-size:12px;opacity:0.7;display:block;margin-bottom:2px;'>Categories (ALL must match)</label>" + catSelect  + "</div>" : "") +
-            (typeSelect ? "<div><label style='font-size:12px;opacity:0.7;display:block;margin-bottom:2px;'>Types (ALL must match)</label>"      + typeSelect + "</div>" : "") +
+            "<div style='display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;'>" +
+            (catSelect  ? "<div style='flex:1;min-width:140px;'><label style='font-size:11px;opacity:0.7;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;'>Categories</label>" + catSelect  + "</div>" : "") +
+            (typeSelect ? "<div style='flex:1;min-width:140px;'><label style='font-size:11px;opacity:0.7;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;'>Types</label>"      + typeSelect + "</div>" : "") +
             "</div>";
     }
 
-    row.innerHTML =
+    var detailHtml =
+        "<div class='condDetail' style='padding:10px;'>" +
         noDeckhint + selectRow +
-        "<div style='display:flex;gap:12px;align-items:center;flex-wrap:wrap;'>" +
-        "<label style='font-size:13px;'>MV min: <input type='number' class='condMvMin' value='" + mvMinVal + "' placeholder='any' style='width:50px;' /></label>" +
-        "<label style='font-size:13px;'>MV max: <input type='number' class='condMvMax' value='" + mvMaxVal + "' placeholder='any' style='width:50px;' /></label>" +
-        "<label style='font-size:13px;'>Count min: <input type='number' class='condMin' value='" + minVal + "' min='0' style='width:45px;' /></label>" +
-        "<label style='font-size:13px;'>Count max: <input type='number' class='condMax' value='" + maxVal + "' placeholder='any' style='width:45px;' /></label>" +
-        "<button class='removeCondBtn' style='margin-left:auto;'>Remove</button>" +
+        "<div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;'>" +
+        "<label style='font-size:13px;'>MV min<br/><input type='number' class='condMvMin' value='" + mvMinVal + "' placeholder='any' style='width:100%;box-sizing:border-box;' /></label>" +
+        "<label style='font-size:13px;'>MV max<br/><input type='number' class='condMvMax' value='" + mvMaxVal + "' placeholder='any' style='width:100%;box-sizing:border-box;' /></label>" +
+        "<label style='font-size:13px;'>Count min<br/><input type='number' class='condMin' value='" + minVal + "' min='0' style='width:100%;box-sizing:border-box;' /></label>" +
+        "<label style='font-size:13px;'>Count max<br/><input type='number' class='condMax' value='" + maxVal + "' placeholder='any' style='width:100%;box-sizing:border-box;' /></label>" +
+        "</div>" +
         "</div>";
+
+    var headerHtml =
+        "<div class='condHeader' style='display:flex;align-items:center;padding:8px 10px;background:#2a2a2a;cursor:pointer;gap:8px;'>" +
+        "<span class='condToggleIcon' style='font-size:11px;opacity:0.6;'>&#9660;</span>" +
+        "<span class='condSummary' style='flex:1;font-size:13px;'></span>" +
+        "<button class='removeCondBtn' style='font-size:12px;padding:2px 8px;'>Remove</button>" +
+        "</div>";
+
+    row.innerHTML = headerHtml + detailHtml;
+
+    // Wire up collapse toggle
+    var header  = row.querySelector(".condHeader");
+    var detail  = row.querySelector(".condDetail");
+    var icon    = row.querySelector(".condToggleIcon");
+    var summary = row.querySelector(".condSummary");
+
+    function collapse() {
+        detail.style.display = "none";
+        icon.innerHTML = "&#9654;";
+        summary.textContent = buildConditionSummary(row);
+    }
+    function expand() {
+        detail.style.display = "block";
+        icon.innerHTML = "&#9660;";
+        summary.textContent = "";
+    }
+
+    header.addEventListener("click", function(e) {
+        if (e.target.classList.contains("removeCondBtn")) { return; }
+        if (detail.style.display === "none") { expand(); } else { collapse(); }
+    });
 
     row.querySelector(".removeCondBtn").addEventListener("click", function() {
         list.removeChild(row);
     });
 
     list.appendChild(row);
+
+    // Start collapsed if restoring a saved condition, expanded if brand new
+    if (savedCondition) { collapse(); } else { expand(); }
 }
 
 function getMulliganConditions() {
@@ -436,4 +498,3 @@ function renderChart(results, ctx, maxMulligans) {
         }
     });
 }
- 
