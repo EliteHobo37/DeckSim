@@ -1,64 +1,36 @@
-export function simulate(deck, conditions, maxMulligans, fastThreshold, slowThreshold) {
-  maxMulligans   = maxMulligans   || 1;
-  fastThreshold  = fastThreshold  || 8;
-  slowThreshold  = slowThreshold  || 9;
-
-  var minTurn = Math.max(1, fastThreshold - 5);
-  var maxTurn = slowThreshold + 5;
-
-  // Build results map for every turn in range
-  var results = {};
-  for (var t = minTurn; t <= maxTurn; t++) {
-    results[t] = 0;
-  }
+export function simulate(deck, mulliganConditions, maxMulligans) {
+  maxMulligans = maxMulligans || 1;
 
   var NUM_TRIALS = 100000;
 
-  // Convert conditions array to lookup map
-  var typeCounts = {};
-  for (var c = 0; c < conditions.length; c++) {
-    typeCounts[conditions[c].type] = { min: conditions[c].min, max: conditions[c].max };
-  }
-
-  function checkConditions(hand) {
-    var counts = {};
-    for (var type in typeCounts) { counts[type] = 0; }
-
-    for (var i = 0; i < hand.length; i++) {
-      for (var j = 0; j < hand[i].types.length; j++) {
-        var t = hand[i].types[j];
-        if (counts.hasOwnProperty(t)) { counts[t]++; }
-      }
-    }
-
-    for (var type in typeCounts) {
-      var min = typeCounts[type].min;
-      var max = typeCounts[type].max;
-      if (counts[type] < min || counts[type] > max) { return false; }
-    }
-    return true;
+  // results[n] = number of trials where conditions were first met after n mulligans
+  // results[-1] = never met (stored as "never" key)
+  var results = { never: 0 };
+  for (var m = 0; m <= maxMulligans; m++) {
+    results[m] = 0;
   }
 
   for (var trial = 0; trial < NUM_TRIALS; trial++) {
-    var d = deck.slice();
-    var won = false;
+    var d   = deck.slice();
+    var met = false;
 
-    for (var m = 0; m <= maxMulligans && !won; m++) {
+    for (var m = 0; m <= maxMulligans; m++) {
       shuffle(d);
-      var handSize = 7 - m;
-      var hand     = d.slice(0, handSize);
+      var hand = d.slice(0, 7 - m);
 
-      if (checkConditions(hand)) {
-        // Opening hand met conditions on turn (7 - m) = card count seen
-        // Mark success for every turn >= the hand size, up to maxTurn
-        for (var seen = handSize; seen <= maxTurn; seen++) {
-          if (results.hasOwnProperty(seen)) { results[seen]++; }
-        }
-        won = true;
+      if (checkConditions(hand, mulliganConditions)) {
+        results[m]++;
+        met = true;
+        break;
       }
+    }
+
+    if (!met) {
+      results.never++;
     }
   }
 
+  // Convert to percentages
   for (var k in results) {
     results[k] = results[k] / NUM_TRIALS;
   }
@@ -66,9 +38,72 @@ export function simulate(deck, conditions, maxMulligans, fastThreshold, slowThre
   return results;
 }
 
+// Check if a hand satisfies all mulligan conditions
+function checkConditions(hand, conditions) {
+  for (var i = 0; i < conditions.length; i++) {
+    var cond  = conditions[i];
+    var count = 0;
+
+    for (var j = 0; j < hand.length; j++) {
+      if (cardMatchesCondition(hand[j], cond)) {
+        count++;
+      }
+    }
+
+    var min = cond.min || 0;
+    var max = cond.max != null ? cond.max : Infinity;
+    if (count < min || count > max) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// A card matches a condition if it satisfies ALL specified filters
+function cardMatchesCondition(card, cond) {
+  // Type filter: card must have ALL specified types
+  if (cond.types && cond.types.length > 0) {
+    for (var i = 0; i < cond.types.length; i++) {
+      if (card.types.indexOf(cond.types[i]) === -1) {
+        return false;
+      }
+    }
+  }
+
+  // Max CMC filter
+  if (cond.maxCmc != null) {
+    var cmc = parseCmc(card.manaCost || "");
+    if (cmc > cond.maxCmc) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// Parse converted mana cost from a mana cost string like {2}{G}{G}
+function parseCmc(manaCost) {
+  if (!manaCost) { return 0; }
+  var total = 0;
+  var regex = /\{([^}]+)\}/g;
+  var match;
+  while ((match = regex.exec(manaCost)) !== null) {
+    var sym = match[1];
+    if (sym === "X" || sym === "x") {
+      // X counts as 0
+    } else if (!isNaN(parseInt(sym))) {
+      total += parseInt(sym);
+    } else {
+      // Single color/hybrid symbol counts as 1
+      total += 1;
+    }
+  }
+  return total;
+}
+
 function shuffle(array) {
   for (var i = array.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
+    var j   = Math.floor(Math.random() * (i + 1));
     var tmp = array[i];
     array[i] = array[j];
     array[j] = tmp;
