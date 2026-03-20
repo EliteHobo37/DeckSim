@@ -349,7 +349,7 @@ function addMulliganConditionRow(savedCondition) {
     var removeBtn = document.createElement("button");
     removeBtn.innerHTML = "&#10005;";
     removeBtn.title = "Remove";
-    removeBtn.style.cssText = "font-size:12px;padding:1px 6px;line-height:1;flex-shrink:0;";
+    removeBtn.style.cssText = "font-size:12px;padding:1px 6px;line-height:1;flex-shrink:0;width:auto;min-width:0;";
 
     var summary = document.createElement("span");
     summary.style.cssText = "flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.85;";
