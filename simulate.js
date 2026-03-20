@@ -1,22 +1,28 @@
-
 export function simulate(deck, conditions, maxMulligans = 1) {
   const results = { 7: 0, 8: 0, 9: 0, 10: 0 };
   const NUM_TRIALS = 100000;
 
-  function checkConditions(hand, conditions) {
-    const typeCounts = conditions.card_type_counts || {};
-    const counts = {};
-    for (let type in typeCounts) counts[type] = 0;
+  // conditions arrives as an array of { type, min, max } from main.js
+  // Convert to a map for fast lookup: { "Land": { min, max }, ... }
+  const typeCounts = {};
+  for (const condition of conditions) {
+    typeCounts[condition.type] = { min: condition.min, max: condition.max };
+  }
 
-    for (let card of hand) {
-      for (let type of card) {
+  function checkConditions(hand) {
+    // Count how many cards of each required type are in hand
+    const counts = {};
+    for (const type in typeCounts) counts[type] = 0;
+
+    for (const card of hand) {
+      for (const type of card.types) {  // ← fixed: was `for (let type of card)`
         if (counts.hasOwnProperty(type)) {
           counts[type]++;
         }
       }
     }
 
-    for (let type in typeCounts) {
+    for (const type in typeCounts) {
       const { min, max } = typeCounts[type];
       if (counts[type] < min || counts[type] > max) {
         return false;
@@ -34,16 +40,16 @@ export function simulate(deck, conditions, maxMulligans = 1) {
     for (let m = 0; m <= maxMulligans; m++) {
       shuffle(d);
       const hand = draw(d, 7 - m);
-      if (checkConditions(hand, conditions)) {
+      if (checkConditions(hand)) {
         for (let seen = 7 - m; seen <= 10; seen++) {
-          results[seen]++;
+          if (results.hasOwnProperty(seen)) results[seen]++;
         }
         break;
       }
     }
   }
 
-  for (let k in results) {
+  for (const k in results) {
     results[k] = results[k] / NUM_TRIALS;
   }
 
