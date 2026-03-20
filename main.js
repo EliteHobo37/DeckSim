@@ -1,4 +1,7 @@
 // main.js
+const BUILD_TIME = "2026-03-20T19:15:20Z";
+console.log(`%c⚙ DeckSim build: ${BUILD_TIME}`, "color: #0f0; font-weight: bold;");
+
 import { simulate } from './simulate.js';
 
 // Tracks the current condition filters (type → {min, max})
