@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var fastThreshold = parseInt(document.getElementById("fast-threshold").value);
         var slowThreshold = parseInt(document.getElementById("slow-threshold").value);
 
-        var results = simulate(deck, conditions, mulligans);
+        var results = simulate(deck, conditions, mulligans, fastThreshold, slowThreshold);
         displayResults(results, fastThreshold, slowThreshold);
 
         var chartCanvas = document.getElementById("chart").getContext("2d");
