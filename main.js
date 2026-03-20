@@ -247,15 +247,26 @@ function getDeckData() {
     return { categories: extractCardCategories(deck), types: extractCardTypes(deck) };
 }
 
-function buildCheckboxGroup(label, cssClass, items, savedList) {
+function buildMultiSelect(cssClass, items, savedList, placeholder) {
     if (items.length === 0) { return ""; }
-    var html = "<div style='margin-bottom:6px;'><label style='font-size:12px;opacity:0.7;'>" + label + ":</label><br/>";
+    var html = "<select class='" + cssClass + "' multiple style='min-width:120px;max-width:180px;'>";
+    html += "<option value='' disabled>" + placeholder + "</option>";
     for (var i = 0; i < items.length; i++) {
-        var checked = (savedList && savedList.indexOf(items[i]) !== -1) ? " checked" : "";
-        html += "<label style='margin-right:10px;font-size:13px;'><input type='checkbox' class='" + cssClass + "' value='" + items[i] + "'" + checked + "> " + items[i] + "</label>";
+        var sel = (savedList && savedList.indexOf(items[i]) !== -1) ? " selected" : "";
+        html += "<option value='" + items[i] + "'" + sel + ">" + items[i] + "</option>";
     }
-    html += "</div>";
+    html += "</select>";
     return html;
+}
+
+function getSelectValues(select) {
+    var values = [];
+    for (var i = 0; i < select.options.length; i++) {
+        if (select.options[i].selected && select.options[i].value !== "") {
+            values.push(select.options[i].value);
+        }
+    }
+    return values;
 }
 
 function addMulliganConditionRow(savedCondition) {
@@ -268,21 +279,30 @@ function addMulliganConditionRow(savedCondition) {
     var savedCats  = savedCondition ? (savedCondition.categories || []) : [];
     var savedTypes = savedCondition ? (savedCondition.types || [])      : [];
 
-    var catHtml  = buildCheckboxGroup("Categories (optional - card must have ALL checked)", "catCheck",  deckData.categories, savedCats);
-    var typeHtml = buildCheckboxGroup("Types (optional - card must have ALL checked)",      "typeCheck", deckData.types,       savedTypes);
+    var catSelect  = buildMultiSelect("catSelect",  deckData.categories, savedCats,  "Any category");
+    var typeSelect = buildMultiSelect("typeSelect",  deckData.types,      savedTypes, "Any type");
 
-    if (!catHtml && !typeHtml) {
-        catHtml = "<p style='font-size:12px;opacity:0.5;'>Load a deck to filter by category or type.</p>";
-    }
+    var noDeckhint = (!catSelect && !typeSelect)
+        ? "<p style='font-size:12px;opacity:0.5;margin:0 0 6px;'>Load a deck to enable category/type filters.</p>"
+        : "";
 
     var mvMinVal = (savedCondition && savedCondition.mvMin != null) ? savedCondition.mvMin : "";
     var mvMaxVal = (savedCondition && savedCondition.mvMax != null) ? savedCondition.mvMax : "";
     var minVal   = (savedCondition && savedCondition.min  != null)  ? savedCondition.min   : 1;
     var maxVal   = (savedCondition && savedCondition.max  != null && savedCondition.max !== Infinity) ? savedCondition.max : "";
 
+    var selectRow = "";
+    if (catSelect || typeSelect) {
+        selectRow =
+            "<div style='display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;align-items:flex-start;'>" +
+            (catSelect  ? "<div><label style='font-size:12px;opacity:0.7;display:block;margin-bottom:2px;'>Categories (ALL must match)</label>" + catSelect  + "</div>" : "") +
+            (typeSelect ? "<div><label style='font-size:12px;opacity:0.7;display:block;margin-bottom:2px;'>Types (ALL must match)</label>"      + typeSelect + "</div>" : "") +
+            "</div>";
+    }
+
     row.innerHTML =
-        catHtml + typeHtml +
-        "<div style='display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px;'>" +
+        noDeckhint + selectRow +
+        "<div style='display:flex;gap:12px;align-items:center;flex-wrap:wrap;'>" +
         "<label style='font-size:13px;'>MV min: <input type='number' class='condMvMin' value='" + mvMinVal + "' placeholder='any' style='width:50px;' /></label>" +
         "<label style='font-size:13px;'>MV max: <input type='number' class='condMvMax' value='" + mvMaxVal + "' placeholder='any' style='width:50px;' /></label>" +
         "<label style='font-size:13px;'>Count min: <input type='number' class='condMin' value='" + minVal + "' min='0' style='width:45px;' /></label>" +
@@ -304,13 +324,11 @@ function getMulliganConditions() {
     for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
 
-        var catChecks  = row.querySelectorAll(".catCheck:checked");
-        var categories = [];
-        for (var j = 0; j < catChecks.length; j++) { categories.push(catChecks[j].value); }
+        var catEl  = row.querySelector(".catSelect");
+        var typeEl = row.querySelector(".typeSelect");
 
-        var typeChecks = row.querySelectorAll(".typeCheck:checked");
-        var types = [];
-        for (var j = 0; j < typeChecks.length; j++) { types.push(typeChecks[j].value); }
+        var categories = catEl  ? getSelectValues(catEl)  : [];
+        var types      = typeEl ? getSelectValues(typeEl) : [];
 
         var mvMinRaw = row.querySelector(".condMvMin").value.trim();
         var mvMaxRaw = row.querySelector(".condMvMax").value.trim();
@@ -418,3 +436,4 @@ function renderChart(results, ctx, maxMulligans) {
         }
     });
 }
+ 
