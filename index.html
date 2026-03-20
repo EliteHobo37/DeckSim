@@ -72,17 +72,17 @@
     </div>
 
     <button id="exitBtn">❌ Exit</button>
-    <button id="debugBtn">🐛 Debug Console</button>
   </div>
+
+  <!-- Fixed debug toggle — always visible above Eruda panel -->
+  <button id="debugBtn" style="position:fixed;bottom:16px;left:16px;z-index:99999;padding:8px 12px;background:#222;color:#0f0;border:1px solid #0f0;border-radius:6px;font-size:13px;cursor:pointer;opacity:0.85;">🐛 Debug</button>
 
   <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
   <script>
-    // Initialize Eruda (mobile-friendly DevTools) but keep it hidden until toggled
     eruda.init();
     eruda.hide();
 
     document.getElementById("debugBtn").addEventListener("click", () => {
-      // eruda._isShow is the internal visibility flag
       if (eruda._isShow) {
         eruda.hide();
       } else {
