@@ -3,6 +3,7 @@ const BUILD_TIME = "__BUILD_TIME__";
 console.log(`%c⚙ DeckSim build: ${BUILD_TIME}`, "color: #0f0; font-weight: bold;");
 console.log('%c💡 Type forceRebuild() in console to clear cache and reload', "color: #aaa;");
 
+
 window.forceRebuild = async () => {
     const keys = await caches.keys();
     await Promise.all(keys.map(k => caches.delete(k)));
