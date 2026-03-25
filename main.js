@@ -347,8 +347,8 @@ function addMulliganConditionRow(savedCondition) {
     summary.style.cssText = "flex:1;font-size:13px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;";
 
     header.appendChild(icon);
-    header.appendChild(removeBtn);
     header.appendChild(summary);
+    header.appendChild(removeBtn);
 
     // - Detail panel -
     var detail = document.createElement("div");
