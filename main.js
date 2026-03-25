@@ -339,7 +339,7 @@ function addMulliganConditionRow(savedCondition) {
     icon.innerHTML = "&#9660;";
     
     var summary = document.createElement("span");
-    summary.style.cssText = "flex:1;font-size:13px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;";
+    summary.style.cssText = "flex:1;font-size:13px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:10;";
  
     var removeBtn = document.createElement("button");
     removeBtn.innerHTML = "&#10005;";
