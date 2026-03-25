@@ -437,7 +437,7 @@ function addMulliganConditionRow(savedCondition) {
         summary.textContent = buildConditionSummary(row);
     }
     function expand() {
-        detail.style.display = "block";
+        detail.style.display = "none";
         icon.innerHTML = "&#9660;";
         summary.textContent = buildConditionSummary(row);
     }
