@@ -439,7 +439,7 @@ function addMulliganConditionRow(savedCondition) {
     function expand() {
         detail.style.display = "block";
         icon.innerHTML = "&#9660;";
-        summary.textContent = "";
+        summary.textContent = buildConditionSummary(row);
     }
 
     header.addEventListener("click", function(e) {
