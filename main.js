@@ -337,14 +337,14 @@ function addMulliganConditionRow(savedCondition) {
     var icon = document.createElement("span");
     icon.style.cssText = "font-size:11px;opacity:0.6;flex-shrink:0;width:14px;text-align:center;";
     icon.innerHTML = "&#9660;";
-
+    
+    var summary = document.createElement("span");
+    summary.style.cssText = "flex:1;font-size:13px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;";
+ 
     var removeBtn = document.createElement("button");
     removeBtn.innerHTML = "&#10005;";
     removeBtn.title = "Remove condition";
     removeBtn.style.cssText = "display:inline-block;width:24px;height:24px;min-width:0;max-width:24px;padding:0;line-height:24px;text-align:center;font-size:13px;flex-shrink:0;cursor:pointer;border-radius:4px;";
-
-    var summary = document.createElement("span");
-    summary.style.cssText = "flex:1;font-size:13px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;";
 
     header.appendChild(icon);
     header.appendChild(summary);
