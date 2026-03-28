@@ -297,12 +297,18 @@ function buildConditionSummary(row) {
 }
 
 function makeDomLabel(text, input) {
-    var lbl = document.createElement("label");
-    lbl.style.cssText = "font-size:13px;display:block;";
-    lbl.appendChild(document.createTextNode(text));
-    lbl.appendChild(document.createElement("br"));
-    lbl.appendChild(input);
-    return lbl;
+    var wrap = document.createElement("div");
+    wrap.style.setProperty("display", "block", "important");
+    wrap.style.marginBottom = "4px";
+    var lbl = document.createElement("div");
+    lbl.style.cssText = "font-size:12px;opacity:0.7;margin-bottom:3px;";
+    lbl.textContent = text;
+    input.style.setProperty("display", "block", "important");
+    input.style.width = "100%";
+    input.style.boxSizing = "border-box";
+    wrap.appendChild(lbl);
+    wrap.appendChild(input);
+    return wrap;
 }
 
 function makeNumberInput(cssClass, val, placeholder) {
@@ -311,7 +317,6 @@ function makeNumberInput(cssClass, val, placeholder) {
     inp.className = cssClass;
     inp.value = val;
     inp.placeholder = placeholder || "any";
-    inp.style.cssText = "width:100%;box-sizing:border-box;";
     return inp;
 }
 
@@ -337,14 +342,14 @@ function addMulliganConditionRow(savedCondition) {
     var icon = document.createElement("span");
     icon.style.cssText = "font-size:11px;opacity:0.6;flex-shrink:0;width:14px;text-align:center;";
     icon.innerHTML = "&#9660;";
-    
-    var summary = document.createElement("span");
-    summary.style.cssText = "flex:1;font-size:13px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:10;";
- 
+
     var removeBtn = document.createElement("button");
     removeBtn.innerHTML = "&#10005;";
     removeBtn.title = "Remove condition";
     removeBtn.style.cssText = "display:inline-block;width:24px;height:24px;min-width:0;max-width:24px;padding:0;line-height:24px;text-align:center;font-size:13px;flex-shrink:0;cursor:pointer;border-radius:4px;";
+
+    var summary = document.createElement("span");
+    summary.style.cssText = "flex:1;font-size:13px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;";
 
     header.appendChild(icon);
     header.appendChild(summary);
@@ -352,7 +357,9 @@ function addMulliganConditionRow(savedCondition) {
 
     // - Detail panel -
     var detail = document.createElement("div");
-    detail.style.cssText = "display:block;padding:10px;box-sizing:border-box;";
+    detail.style.setProperty("display", "block", "important");
+    detail.style.padding = "10px";
+    detail.style.boxSizing = "border-box";
 
     // Dropdowns row
     if (deckData.categories.length > 0 || deckData.types.length > 0) {
@@ -411,9 +418,15 @@ function addMulliganConditionRow(savedCondition) {
         detail.appendChild(hint);
     }
 
-    // Number inputs grid
-    var grid = document.createElement("div");
-    grid.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:8px;";
+    // Number inputs - two columns using two side-by-side divs
+    var inputRow1 = document.createElement("div");
+    inputRow1.style.setProperty("display", "flex", "important");
+    inputRow1.style.gap = "8px";
+    inputRow1.style.marginBottom = "8px";
+
+    var inputRow2 = document.createElement("div");
+    inputRow2.style.setProperty("display", "flex", "important");
+    inputRow2.style.gap = "8px";
 
     var mvMinInp  = makeNumberInput("condMvMin",  mvMinVal, "any");
     var mvMaxInp  = makeNumberInput("condMvMax",  mvMaxVal, "any");
@@ -421,23 +434,33 @@ function addMulliganConditionRow(savedCondition) {
     var cntMaxInp = makeNumberInput("condMax",    maxVal,   "any");
     cntMinInp.min = "0";
 
-    grid.appendChild(makeDomLabel("MV min",    mvMinInp));
-    grid.appendChild(makeDomLabel("MV max",    mvMaxInp));
-    grid.appendChild(makeDomLabel("Count min", cntMinInp));
-    grid.appendChild(makeDomLabel("Count max", cntMaxInp));
-    detail.appendChild(grid);
+    var mvMinWrap  = makeDomLabel("MV min",    mvMinInp);
+    var mvMaxWrap  = makeDomLabel("MV max",    mvMaxInp);
+    var cntMinWrap = makeDomLabel("Count min", cntMinInp);
+    var cntMaxWrap = makeDomLabel("Count max", cntMaxInp);
+    mvMinWrap.style.flex  = "1";
+    mvMaxWrap.style.flex  = "1";
+    cntMinWrap.style.flex = "1";
+    cntMaxWrap.style.flex = "1";
+
+    inputRow1.appendChild(mvMinWrap);
+    inputRow1.appendChild(mvMaxWrap);
+    inputRow2.appendChild(cntMinWrap);
+    inputRow2.appendChild(cntMaxWrap);
+    detail.appendChild(inputRow1);
+    detail.appendChild(inputRow2);
 
     row.appendChild(header);
     row.appendChild(detail);
 
     // - Collapse / expand -
     function collapse() {
-        detail.style.display = "blocl";
+        detail.style.setProperty("display", "none", "important");
         icon.innerHTML = "&#9654;";
         summary.textContent = buildConditionSummary(row);
     }
     function expand() {
-        detail.style.display = "block";
+        detail.style.setProperty("display", "block", "important");
         icon.innerHTML = "&#9660;";
         summary.textContent = "";
     }
