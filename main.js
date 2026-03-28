@@ -453,6 +453,9 @@ function addMulliganConditionRow(savedCondition) {
     row.appendChild(header);
     row.appendChild(detail);
 
+    // Mark row with a data attribute so getMulliganConditions can find it
+    row.setAttribute("data-cond-row", "1");
+
     // - Collapse / expand -
     function collapse() {
         detail.style.setProperty("display", "none", "important");
@@ -467,7 +470,9 @@ function addMulliganConditionRow(savedCondition) {
 
     header.addEventListener("click", function(e) {
         if (e.target === removeBtn) { return; }
-        if (detail.style.display === "none") { expand(); } else { collapse(); }
+        // Check getPropertyValue to handle the !important we set
+        var disp = detail.style.getPropertyValue("display");
+        if (disp === "none") { expand(); } else { collapse(); }
     });
 
     removeBtn.addEventListener("click", function(e) {
@@ -480,7 +485,7 @@ function addMulliganConditionRow(savedCondition) {
 }
 
 function getMulliganConditions() {
-    var rows       = document.querySelectorAll("#mulliganConditionsList .condition-row");
+    var rows       = document.querySelectorAll("#mulliganConditionsList [data-cond-row]");
     var conditions = [];
 
     for (var i = 0; i < rows.length; i++) {
