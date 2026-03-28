@@ -432,12 +432,12 @@ function addMulliganConditionRow(savedCondition) {
 
     // - Collapse / expand -
     function collapse() {
-        detail.style.display = "none";
+        detail.style.display = "blocl";
         icon.innerHTML = "&#9654;";
         summary.textContent = buildConditionSummary(row);
     }
     function expand() {
-        detail.style.display = "none";
+        detail.style.display = "block";
         icon.innerHTML = "&#9660;";
         summary.textContent = buildConditionSummary(row);
     }
