@@ -16,7 +16,7 @@ export function simulate(deck, mulliganConditions, maxMulligans) {
 
     for (var m = 0; m <= maxMulligans; m++) {
       shuffle(d);
-      var hand = d.slice(0, 7 - m);
+      var hand = d.slice(0, 7);
 
       if (checkConditions(hand, mulliganConditions)) {
         results[m]++;
